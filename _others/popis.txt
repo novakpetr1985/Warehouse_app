@@ -1,0 +1,29 @@
+--- spuštění fastapi ---
+
+cd D:\_GitHub\Warehouse_app
+
+venv\Scripts\activate
+
+uvicorn app.main:app --reload
+
+
+--- swagger ---
+
+http://127.0.0.1:8000/docs
+
+
+--- materials for testing ---
+
+s-heat
+s-joint
+s-flex
+s-safe
+s-mat
+
+s-heat	—	izolační rohože a materiály chránící ventily a potrubí v průmyslových topných 		systémech před tepelnými ztrátami, také požární a kouřové clony si-ka-tec
+s-joint	— 	kompenzátory a expanzní spoje pro extrémně namáhané offshore a námořní 			aplikace, chrání plynovody a ropovody před výbuchy si-ka-tec
+s-flex 	— 	potahované textilie pro měchy/vlnovce, používané na kloubové autobusy, vlaky a 		nástupní mosty na letištích si-ka-tec
+s-safe 	— 	osobní ochranné prostředky jako hasičské rukavice, termální výstelky a reflexní 		materiály pro záchranáře si-ka-tec
+s-mat	— 	potahované technické textilie a lamináty (základní produktová řada zmíněná na 		webu)
+
+

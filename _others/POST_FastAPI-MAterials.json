@@ -1,0 +1,29 @@
+{
+  "name": "s-heat",
+  "quantity": 100
+  "note": "izolační rohože a materiály chránící ventily a potrubí v průmyslových topných systémech před tepelnými ztrátami, také požární a kouřové clony si-ka-tec"
+}
+
+{
+  "name": "s-joint",
+  "quantity": 50
+  "note": "kompenzátory a expanzní spoje pro extrémně namáhané offshore a námořní aplikace, chrání plynovody a ropovody před výbuchy si-ka-tec"
+}
+
+{
+  "name": "s-flex",
+  "quantity": 70
+  "note": "potahované textilie pro měchy/vlnovce, používané na kloubové autobusy, vlaky a nástupní mosty na letištích si-ka-tec"
+}
+
+{
+  "name": "s-safe",
+  "quantity": 25
+  "note": "osobní ochranné prostředky jako hasičské rukavice, termální výstelky a reflexní materiály pro záchranáře si-ka-tec"
+}
+
+{
+  "name": "s-mat",
+  "quantity": 200
+  "note": "potahované technické textilie a lamináty (základní produktová řada zmíněná na webu)"
+}
