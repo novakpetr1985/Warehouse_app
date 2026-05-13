@@ -1,0 +1,14 @@
+--- spuštění fastapi ---
+
+cd D:\_GitHub\Warehouse_app
+
+venv\Scripts\activate
+
+uvicorn app.main:app --reload
+
+
+--- swagger ---
+
+http://127.0.0.1:8000/docs
+
+
