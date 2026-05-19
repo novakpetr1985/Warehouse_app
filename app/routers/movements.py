@@ -56,6 +56,27 @@ def update_movement(
 
 
 # -------------------------
+# PATCH
+# -------------------------
+@router.patch("/{movement_id}")
+def patch_movement(
+    movement_id: int,
+    data: schemas.MovementPatch,
+    db: Session = Depends(get_db)
+):
+
+    obj = crud.patch_movement(db, movement_id, data)
+
+    if not obj:
+        raise HTTPException(
+            status_code=404,
+            detail="Movement not found"
+        )
+
+    return obj
+
+
+# -------------------------
 # DELETE ONE
 # -------------------------
 @router.delete("/{movement_id}")

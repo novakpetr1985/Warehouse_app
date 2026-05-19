@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 
 
-# =========================
+# -------------------------
 # MATERIAL
-# =========================
+# -------------------------
 class MaterialCreate(BaseModel):
     name: str
     quantity: int
@@ -27,9 +27,18 @@ class MaterialUpdate(BaseModel):
     note: str | None = None
 
 
-# =========================
+class MaterialPatch(BaseModel):
+    name: str | None = None
+    quantity: int | None = None
+    qr_code: str | None = None
+    location: str | None = None
+    note: str | None = None
+
+
+
+# -------------------------
 # MOVEMENT
-# =========================
+# -------------------------
 class MovementCreate(BaseModel):
     material_id: int
     movement_type: str  # IN / OUT
@@ -50,6 +59,15 @@ class MovementUpdate(BaseModel):
     material_id: int
     movement_type: str
     quantity: int
+    from_location: str | None = None
+    to_location: str | None = None
+    note: str | None = None
+
+
+class MovementPatch(BaseModel):
+    material_id: int | None = None
+    movement_type: str | None = None
+    quantity: int | None = None
     from_location: str | None = None
     to_location: str | None = None
     note: str | None = None

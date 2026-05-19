@@ -54,6 +54,27 @@ def update_material(
 
 
 # -------------------------
+# PATCH
+# -------------------------
+@router.patch("/{material_id}")
+def patch_material(
+    material_id: int,
+    data: schemas.MaterialPatch,
+    db: Session = Depends(get_db)
+):
+
+    obj = crud.patch_material(db, material_id, data)
+
+    if not obj:
+        raise HTTPException(
+            status_code=404,
+            detail="Material not found"
+        )
+
+    return obj
+
+
+# -------------------------
 # DELETE ONE
 # -------------------------
 @router.delete("/{material_id}")

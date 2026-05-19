@@ -54,6 +54,29 @@ def update_material(db, material_id: int, material):
 
 
 # -------------------------
+# PATCH - MATERIALS
+# -------------------------
+def patch_material(db, material_id: int, data):
+
+    obj = db.query(models.Material).filter(
+        models.Material.id == material_id
+    ).first()
+
+    if not obj:
+        return None
+
+    update_data = data.dict(exclude_unset=True)
+
+    for key, value in update_data.items():
+        setattr(obj, key, value)
+
+    db.commit()
+    db.refresh(obj)
+
+    return obj
+
+
+# -------------------------
 # DELETE - MATERIALS - ONE
 # -------------------------
 def delete_material(db, material_id: int):
@@ -125,6 +148,29 @@ def update_movement(db, movement_id: int, movement):
     db.refresh(db_movement)
 
     return db_movement
+
+
+# -------------------------
+#PATCH - MOVEMENTS
+# -------------------------
+def patch_movement(db, movement_id: int, data):
+
+    obj = db.query(models.Movement).filter(
+        models.Movement.id == movement_id
+    ).first()
+
+    if not obj:
+        return None
+
+    update_data = data.dict(exclude_unset=True)
+
+    for key, value in update_data.items():
+        setattr(obj, key, value)
+
+    db.commit()
+    db.refresh(obj)
+
+    return obj
 
 
 # -------------------------
