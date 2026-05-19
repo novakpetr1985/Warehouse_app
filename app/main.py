@@ -1,13 +1,15 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from app.routers import health
+
 
 from app.database import engine, Base, SessionLocal
 from app import models
 
 
 app = FastAPI(title="Warehouse API")
-
+app.include_router(health.router)
 
 # vytvoření tabulek v DB
 Base.metadata.create_all(bind=engine)
