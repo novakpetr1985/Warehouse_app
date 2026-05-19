@@ -29,5 +29,5 @@ def get_one(movement_id: int, db: Session = Depends(get_db)):
 # CREATE MOVEMENT
 # -------------------------
 @router.post("/")
-def create_movement(movement: schemas.MovementCreate, db: Session = Depends(get_db)):
+def create(movement: schemas.MovementCreate, db: Session = Depends(get_db)):
     return process_movement(db, movement)
