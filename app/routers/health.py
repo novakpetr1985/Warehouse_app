@@ -1,53 +1,89 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.database import get_db, check_db, check_tables
+from app.database import get_db, check_db, check_tables, engine
 
 router = APIRouter(tags=["Health"])
 
 
-# ---------------------------
-# BASIC HEALTH
-# ---------------------------
+# =========================
+# BASIC HEALTH CHECK
+# =========================
 @router.get("/health")
-def health_check():
+def health():
+    """
+    Basic service check.
+    Returns only whether API is running.
+    """
     return {
         "status": "ok",
         "service": "Warehouse API"
     }
 
 
-# ---------------------------
-# LIVENESS (process running)
-# ---------------------------
+# =========================
+# LIVENESS PROBE
+# =========================
 @router.get("/health/live")
-def liveness_check():
+def live():
+    """
+    Liveness probe.
+    Used to check if application process is running.
+    """
     return {
         "status": "alive"
     }
 
 
-
+# =========================
+# READINESS PROBE
+# =========================
 @router.get("/health/ready")
-def readiness_check(db: Session = Depends(get_db)):
+def ready(db: Session = Depends(get_db)):
+    """
+    Readiness probe.
+    Checks:
+    - database connection
+    - required tables existence
+    """
 
+    # 1) DB connection check
     db_ok = check_db()
-    tables_ok, missing = check_tables()
 
+    # 2) tables check (materials, movements)
+    tables_ok, tables_status = check_tables(engine)
+
+    # =========================
+    # DB NOT READY
+    # =========================
     if not db_ok:
         raise HTTPException(
             status_code=503,
-            detail="Database not ready"
+            detail={
+                "status": "DB not ready",
+                "database": "FAIL",
+                "tables": tables_status
+            }
         )
 
+    # =========================
+    # TABLES NOT READY
+    # =========================
     if not tables_ok:
         raise HTTPException(
             status_code=503,
-            detail=f"Missing tables: {missing}"
+            detail={
+                "status": "Tables missing",
+                "database": "OK",
+                "tables": tables_status
+            }
         )
 
+    # =========================
+    # ALL OK
+    # =========================
     return {
         "status": "ready",
-        "database": True,
-        "tables": "ok"
+        "database": "OK",
+        "tables": tables_status
     }

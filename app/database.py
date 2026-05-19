@@ -71,3 +71,28 @@ def check_tables():
         return True, []
     except Exception:
         return False, ["inspection_failed"]
+    
+
+# -------------------------------------------------
+# CHECK DB TABLES
+# -------------------------------------------------
+from sqlalchemy import inspect
+
+def check_tables(engine):
+    inspector = inspect(engine)
+
+    required_tables = ["materials", "movements"]
+
+    existing_tables = inspector.get_table_names()
+
+    result = {}
+
+    for table in required_tables:
+        if table in existing_tables:
+            result[table] = "OK"
+        else:
+            result[table] = "MISSING"
+
+    all_ok = all(v == "OK" for v in result.values())
+
+    return all_ok, result
