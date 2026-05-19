@@ -3,14 +3,14 @@ from app import models, schemas
 
 
 # -------------------------
-# MATERIALS - READ ALL
+# GET MATERIALS - READ ALL
 # -------------------------
 def get_materials(db: Session):
     return db.query(models.Material).all()
 
 
 # -------------------------
-# MATERIALS - READ ONE
+# GET MATERIALS - READ ONE
 # -------------------------
 def get_material(db: Session, material_id: int):
     return db.query(models.Material).filter(
@@ -19,7 +19,7 @@ def get_material(db: Session, material_id: int):
 
 
 # -------------------------
-# MATERIALS - CREATE
+# POST MATERIALS CREATE
 # -------------------------
 def create_material(db: Session, material: schemas.MaterialCreate):
     db_material = models.Material(**material.dict())
@@ -29,17 +29,29 @@ def create_material(db: Session, material: schemas.MaterialCreate):
     return db_material
 
 
+
 # -------------------------
-# GET ALL MOVEMENTS
+# GET MOVEMENTS - READ ALL
 # -------------------------
 def get_movements(db):
     return db.query(models.Movement).all()
 
 
 # -------------------------
-# GET ONE MOVEMENT
+# GET MOVEMENTS - READ ONE
 # -------------------------
 def get_movement(db, movement_id: int):
     return db.query(models.Movement).filter(
         models.Movement.id == movement_id
     ).first()
+
+
+# -------------------------
+# POST MOVEMENTS CREATE
+# -------------------------
+def create_movement(db, movement):
+    db_movement = models.Movement(**movement.dict())
+    db.add(db_movement)
+    db.commit()
+    db.refresh(db_movement)
+    return db_movement
