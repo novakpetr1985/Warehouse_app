@@ -3,14 +3,14 @@ from app import models, schemas
 
 
 # -------------------------
-# GET MATERIALS - READ ALL
+# GET - MATERIALS - READ ALL
 # -------------------------
 def get_materials(db: Session):
     return db.query(models.Material).all()
 
 
 # -------------------------
-# GET MATERIALS - READ ONE
+# GET - MATERIALS - READ ONE
 # -------------------------
 def get_material(db: Session, material_id: int):
     return db.query(models.Material).filter(
@@ -19,7 +19,7 @@ def get_material(db: Session, material_id: int):
 
 
 # -------------------------
-# POST MATERIALS CREATE
+# POST - MATERIALS - CREATE
 # -------------------------
 def create_material(db: Session, material: schemas.MaterialCreate):
     db_material = models.Material(**material.dict())
@@ -29,16 +29,37 @@ def create_material(db: Session, material: schemas.MaterialCreate):
     return db_material
 
 
+# -------------------------
+# DELETE - MATERIALS - ONE
+# -------------------------
+def delete_material(db, material_id: int):
+    obj = db.query(models.Material).filter(
+        models.Material.id == material_id
+    ).first()
+
+    if obj:
+        db.delete(obj)
+        db.commit()
+
+    return obj
 
 # -------------------------
-# GET MOVEMENTS - READ ALL
+# DELETE - MATERIALS - ALL
+# -------------------------
+def delete_all_materials(db):
+    db.query(models.Material).delete()
+    db.commit()
+
+
+# -------------------------
+# GET - MOVEMENTS - READ ALL
 # -------------------------
 def get_movements(db):
     return db.query(models.Movement).all()
 
 
 # -------------------------
-# GET MOVEMENTS - READ ONE
+# GET - MOVEMENTS - READ ONE
 # -------------------------
 def get_movement(db, movement_id: int):
     return db.query(models.Movement).filter(
@@ -47,7 +68,7 @@ def get_movement(db, movement_id: int):
 
 
 # -------------------------
-# POST MOVEMENTS CREATE
+# POST - MOVEMENTS - CREATE
 # -------------------------
 def create_movement(db, movement):
     db_movement = models.Movement(**movement.dict())
@@ -55,3 +76,25 @@ def create_movement(db, movement):
     db.commit()
     db.refresh(db_movement)
     return db_movement
+
+
+# -------------------------
+# DELETE - MOVEMENTS - ONE
+# -------------------------
+def delete_movement(db, movement_id: int):
+    obj = db.query(models.Movement).filter(
+        models.Movement.id == movement_id
+    ).first()
+
+    if obj:
+        db.delete(obj)
+        db.commit()
+
+    return obj
+
+# -------------------------
+# DELETE - MOVEMENTS - ALL
+# -------------------------
+def delete_all_movements(db):
+    db.query(models.Movement).delete()
+    db.commit()

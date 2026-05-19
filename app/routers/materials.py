@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -30,3 +30,28 @@ def get_material(material_id: int, db: Session = Depends(get_db)):
 @router.post("/")
 def create_material(material: schemas.MaterialCreate, db: Session = Depends(get_db)):
     return crud.create_material(db, material)
+
+
+# -------------------------
+# DELETE ONE
+# -------------------------
+@router.delete("/{material_id}")
+def delete_material(db, material_id: int):
+    obj = db.query(models.Material).filter(
+        models.Material.id == material_id
+    ).first()
+
+    if obj:
+        db.delete(obj)
+        db.commit()
+
+    return obj
+
+
+# -------------------------
+# DELETE ALL - SECRET KEY REQUIRED 
+# -------------------------
+@router.delete("/")
+def delete_all_materials(db):
+    db.query(models.Material).delete()
+    db.commit()
