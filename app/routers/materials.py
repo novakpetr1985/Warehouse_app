@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -93,7 +93,18 @@ def delete_material(db, material_id: int):
 # -------------------------
 # DELETE ALL - SECRET KEY REQUIRED 
 # -------------------------
-@router.delete("/")
-def delete_all_materials(db):
-    db.query(models.Material).delete()
-    db.commit()
+@router.delete("/all")
+def delete_all_materials(
+    db: Session = Depends(get_db),
+    x_api_key: str = Header(None)
+):
+
+    if x_api_key != "SECRET123":
+        raise HTTPException(
+            status_code=403,
+            detail="Unauthorized"
+        )
+
+    crud.delete_all_materials(db)
+
+    return {"status": "all deleted"}
