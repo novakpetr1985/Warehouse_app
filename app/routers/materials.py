@@ -12,7 +12,7 @@ router = APIRouter(prefix="/materials", tags=["Materials"])
 # GET ALL
 # -------------------------
 @router.get("/")
-def get_all(db: Session = Depends(get_db)):
+def list_materials(db: Session = Depends(get_db)):
     return get_materials(db)
 
 
@@ -20,7 +20,7 @@ def get_all(db: Session = Depends(get_db)):
 # GET ONE
 # -------------------------
 @router.get("/{material_id}")
-def get_one(material_id: int, db: Session = Depends(get_db)):
+def get_material(material_id: int, db: Session = Depends(get_db)):
     return crud.get_material(db, material_id)
 
 
@@ -28,5 +28,5 @@ def get_one(material_id: int, db: Session = Depends(get_db)):
 # CREATE
 # -------------------------
 @router.post("/")
-def create(material: schemas.MaterialCreate, db: Session = Depends(get_db)):
+def create_material(material: schemas.MaterialCreate, db: Session = Depends(get_db)):
     return crud.create_material(db, material)

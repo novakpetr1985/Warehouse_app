@@ -13,7 +13,7 @@ router = APIRouter(prefix="/movements", tags=["Movements"])
 # GET ALL MOVEMENTS
 # -------------------------
 @router.get("/")
-def get_all(db: Session = Depends(get_db)):
+def list_movements(db: Session = Depends(get_db)):
     return crud.get_movements(db)
 
 
@@ -21,7 +21,7 @@ def get_all(db: Session = Depends(get_db)):
 # GET BY ID - ONE MOVEMENT
 # -------------------------
 @router.get("/{movement_id}")
-def get_one(movement_id: int, db: Session = Depends(get_db)):
+def get_movement(movement_id: int, db: Session = Depends(get_db)):
     return crud.get_movement(db, movement_id)
 
 
@@ -29,5 +29,5 @@ def get_one(movement_id: int, db: Session = Depends(get_db)):
 # CREATE MOVEMENT
 # -------------------------
 @router.post("/")
-def create(movement: schemas.MovementCreate, db: Session = Depends(get_db)):
+def create_movement(movement: schemas.MovementCreate, db: Session = Depends(get_db)):
     return process_movement(db, movement)
