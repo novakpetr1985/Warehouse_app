@@ -19,6 +19,14 @@ class MaterialResponse(MaterialCreate):
         from_attributes = True
 
 
+class MaterialUpdate(BaseModel):
+    name: str
+    quantity: int
+    qr_code: str
+    location: str
+    note: str | None = None
+
+
 # =========================
 # MOVEMENT
 # =========================
@@ -36,3 +44,12 @@ class MovementResponse(MovementCreate):
 
     class Config:
         from_attributes = True
+
+
+class MovementUpdate(BaseModel):
+    material_id: int
+    movement_type: str
+    quantity: int
+    from_location: str | None = None
+    to_location: str | None = None
+    note: str | None = None

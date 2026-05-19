@@ -33,6 +33,27 @@ def create_material(material: schemas.MaterialCreate, db: Session = Depends(get_
 
 
 # -------------------------
+# UPDATE
+# -------------------------
+@router.put("/{material_id}")
+def update_material(
+    material_id: int,
+    material: schemas.MaterialUpdate,
+    db: Session = Depends(get_db)
+):
+
+    obj = crud.update_material(db, material_id, material)
+
+    if not obj:
+        raise HTTPException(
+            status_code=404,
+            detail="Material not found"
+        )
+
+    return obj
+
+
+# -------------------------
 # DELETE ONE
 # -------------------------
 @router.delete("/{material_id}")
