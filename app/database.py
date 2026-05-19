@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, inspect
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 # SQLite databáze (soubor)
@@ -48,3 +48,26 @@ def check_db():
         return False
     finally:
         db.close()
+
+
+# -------------------------------------------------
+# HEALTH CHECK - REAL STAV DB TABLES
+# -------------------------------------------------
+def check_tables():
+    """
+    Ověří, že základní tabulky existují
+    """
+    try:
+        inspector = inspect(engine)
+        tables = inspector.get_table_names()
+
+        required_tables = ["materials", "movements"]
+
+        missing = [t for t in required_tables if t not in tables]
+
+        if missing:
+            return False, missing
+
+        return True, []
+    except Exception:
+        return False, ["inspection_failed"]

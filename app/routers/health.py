@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.database import get_db, check_db
+from app.database import get_db, check_db, check_tables
 
 router = APIRouter(tags=["Health"])
 
@@ -27,13 +27,12 @@ def live():
     }
 
 
-# ---------------------------
-# READINESS (DB + dependencies)
-# ---------------------------
+
 @router.get("/health/ready")
 def ready(db: Session = Depends(get_db)):
-    
+
     db_ok = check_db()
+    tables_ok, missing = check_tables()
 
     if not db_ok:
         raise HTTPException(
@@ -41,7 +40,14 @@ def ready(db: Session = Depends(get_db)):
             detail="Database not ready"
         )
 
+    if not tables_ok:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Missing tables: {missing}"
+        )
+
     return {
         "status": "ready",
-        "database": True
+        "database": True,
+        "tables": "ok"
     }
