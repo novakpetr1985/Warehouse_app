@@ -2,7 +2,6 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
-
 from app.database import engine, Base, SessionLocal
 from app import models
 
@@ -23,7 +22,10 @@ def get_db():
         db.close()
 
 
-# REQUEST SCHEMA (JSON input)
+# =========================
+# SCHEMAS
+# =========================
+
 class MaterialCreate(BaseModel):
     name: str
     quantity: int
@@ -32,13 +34,28 @@ class MaterialCreate(BaseModel):
     note: str
 
 
+class MovementCreate(BaseModel):
+    material_id: int
+    movement_type: str   # IN / OUT
+    quantity: int
+    from_location: str | None = None
+    to_location: str | None = None
+    note: str | None = None
+
+
+# =========================
 # ROOT
+# =========================
+
 @app.get("/")
 def root():
     return {"status": "running"}
 
 
-# CREATE (DB)
+# =========================
+# MATERIALS
+# =========================
+
 @app.post("/materials")
 def create_material(material: MaterialCreate, db: Session = Depends(get_db)):
     db_material = models.Material(
@@ -56,7 +73,58 @@ def create_material(material: MaterialCreate, db: Session = Depends(get_db)):
     return db_material
 
 
-# READ ALL (DB)
 @app.get("/materials")
 def get_materials(db: Session = Depends(get_db)):
     return db.query(models.Material).all()
+
+
+# =========================
+# MOVEMENTS
+# =========================
+
+@app.post("/movements")
+def create_movement(movement: MovementCreate, db: Session = Depends(get_db)):
+
+    # najdi material
+    material = db.query(models.Material).filter(
+        models.Material.id == movement.material_id
+    ).first()
+
+    if not material:
+        return {"error": "Material not found"}
+
+    # IN - příjem
+    if movement.movement_type == "IN":
+        material.quantity += movement.quantity
+
+    # OUT - výdej
+    elif movement.movement_type == "OUT":
+
+        if material.quantity < movement.quantity:
+            return {"error": "Not enough stock"}
+
+        material.quantity -= movement.quantity
+
+    else:
+        return {"error": "Invalid movement type (use IN or OUT)"}
+
+    # uložit movement do DB
+    db_movement = models.Movement(
+        material_id=movement.material_id,
+        movement_type=movement.movement_type,
+        quantity=movement.quantity,
+        from_location=movement.from_location,
+        to_location=movement.to_location,
+        note=movement.note
+    )
+
+    db.add(db_movement)
+
+    db.commit()
+    db.refresh(material)
+    db.refresh(db_movement)
+
+    return {
+        "material": material,
+        "movement": db_movement
+    }

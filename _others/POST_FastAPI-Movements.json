@@ -1,0 +1,48 @@
+{
+  "material_id": 1,
+  "movement_type": "IN",
+  "quantity": 100,
+  "to_location": "RECEIVING",
+  "note": "Initial stock - insulation materials for industrial heating systems"
+}
+
+{
+  "material_id": 2,
+  "movement_type": "IN",
+  "quantity": 50,
+  "to_location": "RECEIVING",
+  "note": "Initial stock - expansion joints for offshore and pipeline systems"
+}
+
+{
+  "material_id": 3,
+  "movement_type": "IN",
+  "quantity": 70,
+  "to_location": "STORAGE",
+  "note": "Initial stock - coated textiles for transport and mobility systems"
+}
+
+{
+  "material_id": 4,
+  "movement_type": "IN",
+  "quantity": 25,
+  "to_location": "PRODUCTION",
+  "note": "Initial stock - protective equipment for emergency services"
+}
+
+{
+  "material_id": 5,
+  "movement_type": "IN",
+  "quantity": 200,
+  "to_location": "STORAGE",
+  "note": "Initial stock - base technical textile product line"
+}
+
+
+// PRVNÍ POHYB VE SKLADU
+{
+  "material_id": 1,
+  "movement_type": "OUT",
+  "quantity": 10,
+  "note": "test consumption"
+}

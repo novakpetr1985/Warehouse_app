@@ -1,5 +1,5 @@
 {
-  "id": "1",
+  "id": 1,  
   "name": "s-heat",
   "quantity": 100,
   "qr_code": "QR-SHEAT-001",
@@ -8,7 +8,7 @@
 }
 
 {
-  "id": "2", 
+  "id": 2,
   "name": "s-joint",
   "quantity": 50,
   "qr_code": "QR-SJOINT-002",
@@ -17,7 +17,7 @@
 }
 
 {
-  "id": "3",
+  "id": 3,
   "name": "s-flex",
   "quantity": 70,
   "qr_code": "QR-SFLEX-003",
@@ -26,7 +26,7 @@
 }
 
 {
-  "id": "4",
+  "id": 4,
   "name": "s-safe",
   "quantity": 25,
   "qr_code": "QR-SSAFE-004",
@@ -35,7 +35,7 @@
 }
 
 {
-  "id": "5",
+  "id": 5,
   "name": "s-mat",
   "quantity": 200,
   "qr_code": "QR-SMAT-005",
