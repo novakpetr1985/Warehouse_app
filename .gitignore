@@ -10,6 +10,9 @@ venv/
 # Local configuration and secrets
 .env
 
+# Local SQLite database (created automatically when the API starts)
+warehouse.db
+
 # Test and coverage outputs
 .coverage
 htmlcov/
