@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+import os
+
+from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -16,11 +18,31 @@ def get_movements(db: Session = Depends(get_db)):
 
 
 # -------------------------
+# DELETE ALL - API KEY REQUIRED
+# Must be declared before /{movement_id} so that "all" is not parsed as an ID.
+# -------------------------
+@router.delete("/all")
+def delete_all_movements(
+    db: Session = Depends(get_db),
+    x_api_key: str | None = Header(default=None),
+):
+    expected_key = os.getenv("WAREHOUSE_API_KEY")
+    if not expected_key or x_api_key != expected_key:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+
+    crud.delete_all_movements(db)
+    return {"status": "all deleted"}
+
+
+# -------------------------
 # GET ONE
 # -------------------------
 @router.get("/{movement_id}")
 def get_movement(movement_id: int, db: Session = Depends(get_db)):
-    return crud.get_movement(db, movement_id)
+    movement = crud.get_movement(db, movement_id)
+    if not movement:
+        raise HTTPException(status_code=404, detail="Movement not found")
+    return movement
 
 
 # -------------------------
@@ -94,13 +116,3 @@ def delete_movement(
         )
 
     return {"status": "deleted"}
-
-
-# -------------------------
-# DELETE ALL
-# -------------------------
-@router.delete("/")
-def delete_all_movements(db: Session = Depends(get_db)):
-    crud.delete_all_movements(db)
-
-    return {"status": "all deleted"}

@@ -62,6 +62,22 @@ def test_create_and_get_material(client: TestClient):
     assert response.json()["quantity"] == 10
 
 
+def test_missing_material_returns_404(client: TestClient):
+    response = client.get("/materials/999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Material not found"
+
+
+def test_delete_material(client: TestClient):
+    material_id = create_material(client)
+
+    response = client.delete(f"/materials/{material_id}")
+    assert response.status_code == 200
+    assert response.json() == {"status": "deleted"}
+
+    assert client.get(f"/materials/{material_id}").status_code == 404
+
+
 def test_in_movement_increases_stock(client: TestClient):
     material_id = create_material(client, quantity=10)
 

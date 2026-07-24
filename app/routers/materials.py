@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+import os
+
+from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -17,11 +19,31 @@ def list_materials(db: Session = Depends(get_db)):
 
 
 # -------------------------
+# DELETE ALL - API KEY REQUIRED
+# Must be declared before /{material_id} so that "all" is not parsed as an ID.
+# -------------------------
+@router.delete("/all")
+def delete_all_materials(
+    db: Session = Depends(get_db),
+    x_api_key: str | None = Header(default=None),
+):
+    expected_key = os.getenv("WAREHOUSE_API_KEY")
+    if not expected_key or x_api_key != expected_key:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+
+    crud.delete_all_materials(db)
+    return {"status": "all deleted"}
+
+
+# -------------------------
 # GET ONE
 # -------------------------
 @router.get("/{material_id}")
 def get_material(material_id: int, db: Session = Depends(get_db)):
-    return crud.get_material(db, material_id)
+    material = crud.get_material(db, material_id)
+    if not material:
+        raise HTTPException(status_code=404, detail="Material not found")
+    return material
 
 
 # -------------------------
@@ -78,22 +100,8 @@ def patch_material(
 # DELETE ONE
 # -------------------------
 @router.delete("/{material_id}")
-def delete_material(db, material_id: int):
-    obj = db.query(models.Material).filter(
-        models.Material.id == material_id
-    ).first()
-
-    if obj:
-        db.delete(obj)
-        db.commit()
-
-    return obj
-
-
-# -------------------------
-# DELETE ALL - SECRET KEY REQUIRED 
-# -------------------------
-@router.delete("/")
-def delete_all_materials(db):
-    db.query(models.Material).delete()
-    db.commit()
+def delete_material(material_id: int, db: Session = Depends(get_db)):
+    obj = crud.delete_material(db, material_id)
+    if not obj:
+        raise HTTPException(status_code=404, detail="Material not found")
+    return {"status": "deleted"}

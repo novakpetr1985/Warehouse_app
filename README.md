@@ -34,9 +34,18 @@ Hromadné smazání je dostupné přes `DELETE /materials/all` a `DELETE /moveme
 $env:WAREHOUSE_API_KEY = "zvol-si-vlastni-klic"
 ```
 
-## Výchozí data a manuální kontrola
+## Databáze a ukázková data
 
-Soubor `warehouse.db` obsahuje pět ukázkových materiálů a pět pohybů. Pro rychlou ruční kontrolu ve Swaggeru:
+Databáze `warehouse.db` je lokální soubor a není součástí Gitu. Při prvním spuštění API se automaticky vytvoří prázdná SQLite databáze v kořeni projektu, včetně tabulek `materials` a `movements`. Projekt proto lze spustit na jiném počítači i bez existující databáze.
+
+Ukázkové JSON požadavky jsou v adresáři `_others`:
+
+- `POST_FastAPI-Materials.json` pro vytvoření materiálů;
+- `POST_FastAPI-Movements.json` pro vytvoření pohybů.
+
+Odešli je přes Swagger nebo Postman. Při vytváření pohybů nejdříve vytvoř materiály a použij jejich skutečná ID.
+
+Pro rychlou ruční kontrolu ve Swaggeru:
 
 - ověř `GET /health/ready`;
 - vytvoř nový materiál a ověř jeho zobrazení v seznamu i detailu;
