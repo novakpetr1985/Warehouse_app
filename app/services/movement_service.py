@@ -1,3 +1,5 @@
+from fastapi import HTTPException
+
 from app import crud, models
 
 
@@ -9,7 +11,7 @@ def process_movement(db, movement):
     ).first()
 
     if not material:
-        return {"error": "Material not found"}
+        raise HTTPException(status_code=404, detail="Material not found")
 
     # IN (příjem)
     if movement.movement_type == "IN":
@@ -19,12 +21,12 @@ def process_movement(db, movement):
     elif movement.movement_type == "OUT":
 
         if material.quantity < movement.quantity:
-            return {"error": "Not enough stock"}
+            raise HTTPException(status_code=409, detail="Not enough stock")
 
         material.quantity -= movement.quantity
 
     else:
-        return {"error": "Invalid movement type"}
+        raise HTTPException(status_code=422, detail="Invalid movement type")
 
     # ulož movement
     db_movement = crud.create_movement(db, movement)
