@@ -1,0 +1,18 @@
+# Python bytecode and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local virtual environments
+venv/
+.venv/
+
+# Local configuration and secrets
+.env
+
+# Local SQLite database (created automatically when the API starts)
+warehouse.db
+
+# Test and coverage outputs
+.coverage
+htmlcov/
