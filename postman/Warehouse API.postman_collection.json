@@ -1,0 +1,334 @@
+{
+  "info": {
+    "_postman_id": "a0d635f5-8097-47e3-8b06-1fbcaf1e3a9c",
+    "name": "Warehouse API",
+    "description": "Collection for the local Warehouse API. Run the folders in order: Health, Materials, Movements, Cleanup. The Dangerous requests require an explicit API key.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "apiKey",
+      "value": ""
+    },
+    {
+      "key": "createdMaterialId",
+      "value": ""
+    },
+    {
+      "key": "createdMovementId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/"
+          }
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Health endpoint returns 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Service status is ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Live",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health/live"
+          }
+        },
+        {
+          "name": "Ready",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health/ready"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Materials",
+      "item": [
+        {
+          "name": "Create Material",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman material {{$timestamp}}\",\n  \"quantity\": 10,\n  \"qr_code\": \"POSTMAN-{{$timestamp}}\",\n  \"location\": \"POSTMAN\",\n  \"note\": \"Created by the Postman collection\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/materials/"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Material was created', () => pm.response.to.have.status(200));",
+                  "const materialId = pm.response.json().id;",
+                  "pm.test('Response includes a material ID', () => pm.expect(materialId).to.be.a('number'));",
+                  "pm.collectionVariables.set('createdMaterialId', String(materialId));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Materials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/materials/"
+          }
+        },
+        {
+          "name": "Get Created Material",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/materials/{{createdMaterialId}}"
+          }
+        },
+        {
+          "name": "Update Created Material",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman material updated\",\n  \"quantity\": 12,\n  \"qr_code\": \"POSTMAN-UPDATED\",\n  \"location\": \"POSTMAN\",\n  \"note\": \"Updated by the Postman collection\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/materials/{{createdMaterialId}}"
+          }
+        },
+        {
+          "name": "Patch Created Material",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Patched by the Postman collection\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/materials/{{createdMaterialId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Movements",
+      "item": [
+        {
+          "name": "Create IN Movement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"material_id\": {{createdMaterialId}},\n  \"movement_type\": \"IN\",\n  \"quantity\": 1,\n  \"to_location\": \"POSTMAN\",\n  \"note\": \"Created by the Postman collection\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/movements/"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Movement was created', () => pm.response.to.have.status(200));",
+                  "const movementId = pm.response.json().movement.id;",
+                  "pm.test('Response includes a movement ID', () => pm.expect(movementId).to.be.a('number'));",
+                  "pm.collectionVariables.set('createdMovementId', String(movementId));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Movements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/movements/"
+          }
+        },
+        {
+          "name": "Get Created Movement",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/movements/{{createdMovementId}}"
+          }
+        },
+        {
+          "name": "Update Created Movement",
+          "request": {
+            "method": "PUT",
+            "description": "Uses the same stock-impacting fields as the created movement. Editing a movement does not recalculate the material quantity.",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"material_id\": {{createdMaterialId}},\n  \"movement_type\": \"IN\",\n  \"quantity\": 1,\n  \"from_location\": null,\n  \"to_location\": \"POSTMAN\",\n  \"note\": \"Updated by the Postman collection\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/movements/{{createdMovementId}}"
+          }
+        },
+        {
+          "name": "Patch Created Movement",
+          "request": {
+            "method": "PATCH",
+            "description": "Only updates the movement record. It does not recalculate the material quantity.",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Patched by the Postman collection\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/movements/{{createdMovementId}}"
+          }
+        },
+        {
+          "name": "Delete Created Movement",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/movements/{{createdMovementId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cleanup",
+      "item": [
+        {
+          "name": "Delete Created Material",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/materials/{{createdMaterialId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dangerous - run manually",
+      "description": "These requests delete all data. They return 403 until apiKey matches the WAREHOUSE_API_KEY set for the running server.",
+      "item": [
+        {
+          "name": "Delete All Materials",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": "{{baseUrl}}/materials/all"
+          }
+        },
+        {
+          "name": "Delete All Movements",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": "{{baseUrl}}/movements/all"
+          }
+        }
+      ]
+    }
+  ]
+}

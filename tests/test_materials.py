@@ -87,6 +87,7 @@ def test_in_movement_increases_stock(client: TestClient):
     )
     assert response.status_code == 200
     assert response.json()["material"]["quantity"] == 15
+    assert response.json()["movement"]["id"]
 
 
 def test_out_movement_decreases_stock(client: TestClient):

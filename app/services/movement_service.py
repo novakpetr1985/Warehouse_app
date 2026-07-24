@@ -33,6 +33,7 @@ def process_movement(db, movement):
 
     db.commit()
     db.refresh(material)
+    db.refresh(db_movement)
 
     return {
         "material": material,
