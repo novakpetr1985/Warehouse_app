@@ -22,7 +22,7 @@ def get_material(db: Session, material_id: int):
 # POST - MATERIALS - CREATE
 # -------------------------
 def create_material(db: Session, material: schemas.MaterialCreate):
-    db_material = models.Material(**material.dict())
+    db_material = models.Material(**material.model_dump())
     db.add(db_material)
     db.commit()
     db.refresh(db_material)
@@ -65,7 +65,7 @@ def patch_material(db, material_id: int, data):
     if not obj:
         return None
 
-    update_data = data.dict(exclude_unset=True)
+    update_data = data.model_dump(exclude_unset=True)
 
     for key, value in update_data.items():
         setattr(obj, key, value)
@@ -118,7 +118,7 @@ def get_movement(db, movement_id: int):
 # POST - MOVEMENTS - CREATE
 # -------------------------
 def create_movement(db, movement):
-    db_movement = models.Movement(**movement.dict())
+    db_movement = models.Movement(**movement.model_dump())
     db.add(db_movement)
     db.commit()
     db.refresh(db_movement)
@@ -162,7 +162,7 @@ def patch_movement(db, movement_id: int, data):
     if not obj:
         return None
 
-    update_data = data.dict(exclude_unset=True)
+    update_data = data.model_dump(exclude_unset=True)
 
     for key, value in update_data.items():
         setattr(obj, key, value)
